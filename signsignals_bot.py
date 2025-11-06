@@ -21,13 +21,15 @@ TOKEN_CONTRACT = os.getenv("TOKEN_CONTRACT")
 
 # ---------------------------------------------------
 
-missing_keys = [k for k, v in {
+missing_keys = [
+k for k, v in {
 "CONSUMER_KEY": CONSUMER_KEY,
 "CONSUMER_SECRET": CONSUMER_SECRET,
 "ACCESS_TOKEN": ACCESS_TOKEN,
 "ACCESS_TOKEN_SECRET": ACCESS_TOKEN_SECRET,
 "TOKEN_CONTRACT": TOKEN_CONTRACT
-}.items() if not v]
+}.items() if not v
+]
 
 if missing_keys:
 raise SystemExit(f"❌ Missing GitHub secrets: {', '.join(missing_keys)}")
@@ -39,6 +41,12 @@ raise SystemExit(f"❌ Missing GitHub secrets: {', '.join(missing_keys)}")
 # ---------------------------------------------------
 
 DEX_URL = f"[https://api.dexscreener.com/latest/dex/tokens/{TOKEN_CONTRACT}](https://api.dexscreener.com/latest/dex/tokens/{TOKEN_CONTRACT})"
+
+# ---------------------------------------------------
+
+# Fetch price function
+
+# ---------------------------------------------------
 
 def fetch_price():
 """Fetch token price from DexScreener API."""
@@ -61,6 +69,12 @@ except Exception as e:
     print(f"❌ Error fetching price: {e}")
     return None, None
 ```
+
+# ---------------------------------------------------
+
+# Post tweet function
+
+# ---------------------------------------------------
 
 def post_tweet(price, change_24h):
 """Post the price update to X (Twitter) using Tweepy."""
@@ -96,6 +110,12 @@ except Exception as e:
     print(f"❌ Error posting tweet: {e}")
 ```
 
+# ---------------------------------------------------
+
+# Main function
+
+# ---------------------------------------------------
+
 def main():
 print("🚀 Starting SignSignals bot ...")
 price, change_24h = fetch_price()
@@ -103,6 +123,12 @@ if price is not None:
 post_tweet(price, change_24h)
 else:
 print("⚠️ Could not fetch price; tweet skipped.")
+
+# ---------------------------------------------------
+
+# Entry point
+
+# ---------------------------------------------------
 
 if **name** == "**main**":
 main()
