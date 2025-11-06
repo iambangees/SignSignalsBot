@@ -2,8 +2,8 @@ name: Daily Tweet
 
 on:
   schedule:
-    - cron: '0 12 * * *'  # Runs every day at 12:00 UTC
-  workflow_dispatch:        # Allows manual run from the Actions tab
+    - cron: '0 12 * * *'  # daily at 12:00 UTC
+  workflow_dispatch:      # manual run option
 
 jobs:
   tweet:
