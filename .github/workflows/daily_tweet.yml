@@ -3,21 +3,30 @@ name: Daily Tweet
 on:
 schedule:
 - cron: '0 12 * * *'  # Daily at 12:00 UTC
-workflow_dispatch:      # Manual trigger
+workflow_dispatch:      # Allows manual trigger
 
 jobs:
 tweet:
 runs-on: ubuntu-latest
 steps:
-- uses: actions/checkout@v3
-- uses: actions/setup-python@v4
-with:
-python-version: '3.11'
-- run: pip install -r requirements.txt
-- run: python signsignals_bot.py
-env:
-CONSUMER_KEY: ${{ secrets.CONSUMER_KEY }}
-CONSUMER_SECRET: ${{ secrets.CONSUMER_SECRET }}
-ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-ACCESS_TOKEN_SECRET: ${{ secrets.ACCESS_TOKEN_SECRET }}
-TOKEN_CONTRACT: ${{ secrets.TOKEN_CONTRACT }}
+- name: Checkout repository
+uses: actions/checkout@v3
+
+```
+  - name: Set up Python
+    uses: actions/setup-python@v4
+    with:
+      python-version: '3.11'
+
+  - name: Install dependencies
+    run: pip install -r requirements.txt
+
+  - name: Run SignSignals Bot
+    run: python signsignals_bot.py
+    env:
+      CONSUMER_KEY: ${{ secrets.CONSUMER_KEY }}
+      CONSUMER_SECRET: ${{ secrets.CONSUMER_SECRET }}
+      ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+      ACCESS_TOKEN_SECRET: ${{ secrets.ACCESS_TOKEN_SECRET }}
+      TOKEN_CONTRACT: ${{ secrets.TOKEN_CONTRACT }}
+```
