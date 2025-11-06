@@ -5,7 +5,7 @@ from datetime import datetime
 
 # ---------------------------------------------------
 
-# Load API credentials from GitHub Secrets
+# Load GitHub Secrets
 
 # ---------------------------------------------------
 
@@ -17,7 +17,7 @@ TOKEN_CONTRACT = os.getenv("TOKEN_CONTRACT")
 
 # ---------------------------------------------------
 
-# Validate credentials
+# Validate secrets
 
 # ---------------------------------------------------
 
@@ -44,12 +44,11 @@ DEX_URL = f"[https://api.dexscreener.com/latest/dex/tokens/{TOKEN_CONTRACT}](htt
 
 # ---------------------------------------------------
 
-# Fetch price function
+# Fetch price
 
 # ---------------------------------------------------
 
 def fetch_price():
-"""Fetch token price from DexScreener API."""
 try:
 print("🔍 Fetching price from DexScreener ...")
 response = requests.get(DEX_URL, timeout=10)
@@ -61,10 +60,10 @@ data = response.json()
         pair = data["pairs"][0]
         price = float(pair["priceUsd"])
         change_24h = pair.get("priceChange", {}).get("h24")
-        print(f"💰 Current price: ${price:.4f}, 24h change: {change_24h}")
+        print(f"💰 Price: ${price:.4f}, 24h change: {change_24h}")
         return price, change_24h
     else:
-        raise ValueError("No trading pairs found for token.")
+        raise ValueError("No trading pairs found.")
 except Exception as e:
     print(f"❌ Error fetching price: {e}")
     return None, None
@@ -72,12 +71,11 @@ except Exception as e:
 
 # ---------------------------------------------------
 
-# Post tweet function
+# Post tweet
 
 # ---------------------------------------------------
 
 def post_tweet(price, change_24h):
-"""Post the price update to X (Twitter) using Tweepy."""
 try:
 print("🐦 Connecting to X API ...")
 client = tweepy.Client(
@@ -90,20 +88,12 @@ access_token_secret=ACCESS_TOKEN_SECRET
 ```
     timestamp = datetime.utcnow().strftime("%Y-%m-%d %H:%M UTC")
     if change_24h:
-        change_symbol = "📈" if float(change_24h) > 0 else "📉"
-        tweet = (
-            f"$SIGN Price = ${price:.4f} {change_symbol}{change_24h}%\n"
-            f"Updated: {timestamp}\n"
-            "#SIGN #Crypto #SIGNSignals"
-        )
+        symbol = "📈" if float(change_24h) > 0 else "📉"
+        tweet = f"$SIGN Price = ${price:.4f} {symbol}{change_24h}%\nUpdated: {timestamp}\n#SIGN #Crypto #SIGNSignals"
     else:
-        tweet = (
-            f"$SIGN Price = ${price:.4f}\n"
-            f"Updated: {timestamp}\n"
-            "#SIGN #Crypto #SIGNSignals"
-        )
+        tweet = f"$SIGN Price = ${price:.4f}\nUpdated: {timestamp}\n#SIGN #Crypto #SIGNSignals"
 
-    print("\n📝 Tweet content preview:\n" + tweet + "\n")
+    print("\n📝 Tweet preview:\n" + tweet)
     client.create_tweet(text=tweet)
     print("✅ Tweet posted successfully!")
 except Exception as e:
@@ -112,7 +102,7 @@ except Exception as e:
 
 # ---------------------------------------------------
 
-# Main function
+# Main
 
 # ---------------------------------------------------
 
@@ -122,13 +112,7 @@ price, change_24h = fetch_price()
 if price is not None:
 post_tweet(price, change_24h)
 else:
-print("⚠️ Could not fetch price; tweet skipped.")
-
-# ---------------------------------------------------
-
-# Entry point
-
-# ---------------------------------------------------
+print("⚠️ Could not fetch price; skipping tweet.")
 
 if **name** == "**main**":
 main()
