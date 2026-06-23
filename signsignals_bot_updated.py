@@ -23,7 +23,7 @@ if missing_keys:
 # Token contracts for multiple cryptocurrencies
 TOKEN_CONTRACTS = {
     "SIGN": "0x...",  # Replace with actual SIGN contract
-    "TON": "0x...",   # Replace with actual TON contract
+    "GRAM": "0x...",   # Replace with actual GRAM contract
     "BTC": "0x..."    # Replace with actual BTC contract
 }
 
