@@ -20,33 +20,86 @@ missing_keys = [k for k, v in {
 if missing_keys:
     raise SystemExit(f"❌ Missing GitHub secrets: {', '.join(missing_keys)}")
 
-# Token contracts for multiple cryptocurrencies
-TOKEN_CONTRACTS = {
-    "SIGN": "0x...",  # Replace with actual SIGN contract
-    "GRAM": "0x...",   # Replace with actual GRAM contract
-    "BTC": "0x..."    # Replace with actual BTC contract
+# Multi-chain token configuration
+TOKENS = {
+    "SIGN": {
+        "blockchain": "solana",  # SIGN is on Solana
+        "address": "APeybLoCHSYMPTnijUNsrMN1jNmJoYP6EAHRD6H91ZXX",
+        "symbol": "SIGN"
+    },
+    "GRAM": {
+        "blockchain": "ton",  # GRAM is native to TON
+        "address": "EQC47093oX5Xhb0xuk2lCr2RhS8rj-vul61u4W2UH5ORmG_O",
+        "symbol": "GRAM"
+    },
+    "BTC": {
+        "blockchain": "bitcoin",  # BTC is native to Bitcoin
+        "address": None,  # Native token, no address
+        "symbol": "BTC"
+    }
 }
 
-DEX_URL_TEMPLATE = "https://api.dexscreener.com/latest/dex/tokens/{}"
+# API endpoints for different blockchains
+API_ENDPOINTS = {
+    "solana": "https://api.solana.fm/price",
+    "ton": "https://tonapi.io/v2/jettons/{address}/prices",
+    "bitcoin": "https://api.blockchain.info/stats",
+    "ethereum": "https://api.dexscreener.com/latest/dex/tokens/{{address}}"
+}
 
-def fetch_price(token_symbol, token_contract):
+def fetch_price(token_info):
+    blockchain = token_info["blockchain"]
+    address = token_info["address"]
+    symbol = token_info["symbol"]
+    
     try:
-        print(f"🔍 Fetching {token_symbol} price from DexScreener ...")
-        response = requests.get(DEX_URL_TEMPLATE.format(token_contract), timeout=10)
-        response.raise_for_status()
-        data = response.json()
-
-        if "pairs" in data and len(data["pairs"]) > 0:
-            pair = data["pairs"][0]
-            price = float(pair["priceUsd"])
-            change_24h = pair.get("priceChange", {}).get("h24")
-            print(f"💰 {token_symbol} Current price: ${price:.4f}, 24h change: {change_24h}")
-            return token_symbol, price, change_24h
-        else:
-            print(f"⚠️ No trading pairs found for {token_symbol}.")
-            return None, None, None
+        print(f"🔍 Fetching {symbol} price from {blockchain}...")
+        
+        if blockchain == "solana":
+            # Solana API
+            response = requests.get(API_ENDPOINTS["solana"], params={"token": address}, timeout=10)
+            response.raise_for_status()
+            data = response.json()
+            price = float(data.get("price", 0))
+            change_24h = data.get("change_24h", 0)
+            
+        elif blockchain == "ton":
+            # TON API
+            url = API_ENDPOINTS["ton"].format(address=address)
+            response = requests.get(url, timeout=10)
+            response.raise_for_status()
+            data = response.json()
+            price = float(data.get("usd_price", 0))
+            change_24h = data.get("price_change_percentage_24h", 0)
+            
+        elif blockchain == "bitcoin":
+            # Bitcoin API
+            response = requests.get(API_ENDPOINTS["bitcoin"], timeout=10)
+            response.raise_for_status()
+            data = response.json()
+            price = float(data.get("btc_price_usd", 0))
+            change_24h = data.get("24h_change", 0)
+            
+        elif blockchain == "ethereum":
+            # DexScreener API
+            url = API_ENDPOINTS["ethereum"].format(address=address)
+            response = requests.get(url, timeout=10)
+            response.raise_for_status()
+            data = response.json()
+            
+            if "pairs" in data and len(data["pairs"]) > 0:
+                pair = data["pairs"][0]
+                price = float(pair["priceUsd"])
+                change_24h = pair.get("priceChange", {}).get("h24")
+            else:
+                print(f"⚠️ No trading pairs found for {symbol}.")
+                return None, None, None
+        
+        print(f"💰 {symbol} Current price: ${price:.4f}, 24h change: {change_24h}")
+        return symbol, price, change_24h
+        
     except Exception as e:
-        print(f"❌ Error fetching {token_symbol} price: {e}")
+        print(f"❌ Error fetching {symbol} price: {e}")
         return None, None, None
 
 def post_tweet(token_symbol, price, change_24h):
@@ -83,12 +136,12 @@ def post_tweet(token_symbol, price, change_24h):
 def main():
     print("🚀 Starting SignSignals bot ...")
     
-    for token_symbol, token_contract in TOKEN_CONTRACTS.items():
-        price, change_24h = fetch_price(token_symbol, token_contract)
+    for token_info in TOKENS.values():
+        price, change_24h = fetch_price(token_info)
         if price is not None:
-            post_tweet(token_symbol, price, change_24h)
+            post_tweet(token_info["symbol"], price, change_24h)
         else:
-            print(f"⚠️ Could not fetch {token_symbol} price; tweet skipped.")
+            print(f"⚠️ Could not fetch {token_info['symbol']} price; tweet skipped.")
 
 if __name__ == "__main__":
     main()
