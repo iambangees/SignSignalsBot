@@ -23,8 +23,8 @@ if missing_keys:
 # Multi-chain token configuration
 TOKENS = {
     "SIGN": {
-        "blockchain": "solana",  # SIGN is on Solana
-        "address": "APeybLoCHSYMPTnijUNsrMN1jNmJoYP6EAHRD6H91ZXX",
+        "blockchain": "ethereum",  # SIGN is on Ethereum (and BSC)
+        "address": "0x868FCEd65edBF0056c4163515dD840e9f287A4c3",
         "symbol": "SIGN"
     },
     "GRAM": {
@@ -41,10 +41,9 @@ TOKENS = {
 
 # API endpoints for different blockchains
 API_ENDPOINTS = {
-    "solana": "https://api.solana.fm/price",
+    "ethereum": "https://api.dexscreener.com/latest/dex/tokens/{{address}}",
     "ton": "https://tonapi.io/v2/jettons/{address}/prices",
-    "bitcoin": "https://api.blockchain.info/stats",
-    "ethereum": "https://api.dexscreener.com/latest/dex/tokens/{{address}}"
+    "bitcoin": "https://api.blockchain.info/stats"
 }
 
 def fetch_price(token_info):
@@ -55,32 +54,7 @@ def fetch_price(token_info):
     try:
         print(f"🔍 Fetching {symbol} price from {blockchain}...")
         
-        if blockchain == "solana":
-            # Solana API
-            response = requests.get(API_ENDPOINTS["solana"], params={"token": address}, timeout=10)
-            response.raise_for_status()
-            data = response.json()
-            price = float(data.get("price", 0))
-            change_24h = data.get("change_24h", 0)
-            
-        elif blockchain == "ton":
-            # TON API
-            url = API_ENDPOINTS["ton"].format(address=address)
-            response = requests.get(url, timeout=10)
-            response.raise_for_status()
-            data = response.json()
-            price = float(data.get("usd_price", 0))
-            change_24h = data.get("price_change_percentage_24h", 0)
-            
-        elif blockchain == "bitcoin":
-            # Bitcoin API
-            response = requests.get(API_ENDPOINTS["bitcoin"], timeout=10)
-            response.raise_for_status()
-            data = response.json()
-            price = float(data.get("btc_price_usd", 0))
-            change_24h = data.get("24h_change", 0)
-            
-        elif blockchain == "ethereum":
+        if blockchain == "ethereum":
             # DexScreener API
             url = API_ENDPOINTS["ethereum"].format(address=address)
             response = requests.get(url, timeout=10)
@@ -91,13 +65,33 @@ def fetch_price(token_info):
                 pair = data["pairs"][0]
                 price = float(pair["priceUsd"])
                 change_24h = pair.get("priceChange", {}).get("h24")
+                print(f"💰 {symbol} Current price: ${price:.4f}, 24h change: {change_24h}")
+                return price, change_24h
             else:
                 print(f"⚠️ No trading pairs found for {symbol}.")
                 return None, None
-        
-        print(f"💰 {symbol} Current price: ${price:.4f}, 24h change: {change_24h}")
-        return symbol, price, change_24h
-        
+                
+        elif blockchain == "ton":
+            # TON API
+            url = API_ENDPOINTS["ton"].format(address=address)
+            response = requests.get(url, timeout=10)
+            response.raise_for_status()
+            data = response.json()
+            price = float(data.get("usd_price", 0))
+            change_24h = data.get("price_change_percentage_24h", 0)
+            print(f"💰 {symbol} Current price: ${price:.4f}, 24h change: {change_24h}")
+            return price, change_24h
+            
+        elif blockchain == "bitcoin":
+            # Bitcoin API
+            response = requests.get(API_ENDPOINTS["bitcoin"], timeout=10)
+            response.raise_for_status()
+            data = response.json()
+            price = float(data.get("btc_price_usd", 0))
+            change_24h = data.get("24h_change", 0)
+            print(f"💰 {symbol} Current price: ${price:.4f}, 24h change: {change_24h}")
+            return price, change_24h
+            
     except Exception as e:
         print(f"❌ Error fetching {symbol} price: {e}")
         return None, None
