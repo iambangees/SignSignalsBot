@@ -39,9 +39,7 @@ cd SignSignalsBot
 pip install -r requirements.txt
 ```
 
-3. Create a `.env` file:
-```bash
-cp .env.example .env
+3. Add keys in github secrets
 ```
 
 4. Add your Twitter API credentials to `.env`:
