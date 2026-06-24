@@ -14,8 +14,8 @@ Multi-chain cryptocurrency price bot that posts tweets for SIGN, GRAM, and BTC t
 
 | Token | Blockchain | Contract Address |
 |-------|------------|------------------|
-| SIGN | Solana | APeybLoCHSYMPTnijUNsrMN1jNmJoYP6EAHRD6H91ZXX |
-| GRAM | TON | EQC47093oX5Xhb0xuk2lCr2RhS8rj-vul61u4W2UH5ORmG_O |
+| SIGN | ETHEREUM | 0x868FCEd65edBF0056c4163515dD840e9f287A4c3 |
+| GRAM prev| TON | EQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAM9c |
 | BTC | Bitcoin | Native (no contract needed) |
 
 ## Setup 🛠️
