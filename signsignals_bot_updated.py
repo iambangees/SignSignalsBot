@@ -93,14 +93,14 @@ def fetch_price(token_info):
                 change_24h = pair.get("priceChange", {}).get("h24")
             else:
                 print(f"⚠️ No trading pairs found for {symbol}.")
-                return None, None, None
+                return None, None
         
         print(f"💰 {symbol} Current price: ${price:.4f}, 24h change: {change_24h}")
         return symbol, price, change_24h
         
     except Exception as e:
         print(f"❌ Error fetching {symbol} price: {e}")
-        return None, None, None
+        return None, None
 
 def post_tweet(token_symbol, price, change_24h):
     try:
