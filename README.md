@@ -1,4 +1,4 @@
-# SignSignalsBot 🚀
+# SignSignalsBot 🧡
 
 Multi-chain cryptocurrency price bot that posts tweets for SIGN, GRAM, and BTC tokens.
 
@@ -106,7 +106,7 @@ MIT License - feel free to use this bot for your own projects!
 
 ## Support 💬
 
-For issues or questions, please open an issue on GitHub or contact @SignSignals.
+For issues or questions, please open an issue on GitHub or contact @iambangees
 
 ---
 
