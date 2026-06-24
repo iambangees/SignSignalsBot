@@ -23,18 +23,18 @@ if missing_keys:
 # Multi-chain token configuration
 TOKENS = {
     "SIGN": {
-        "blockchain": "ethereum",  # SIGN is on Ethereum (and BSC)
+        "blockchain": "ethereum",
         "address": "0x868FCEd65edBF0056c4163515dD840e9f287A4c3",
         "symbol": "SIGN"
     },
     "GRAM": {
-        "blockchain": "ton",  # GRAM is native to TON
+        "blockchain": "ton",
         "address": "EQC47093oX5Xhb0xuk2lCr2RhS8rj-vul61u4W2UH5ORmG_O",
         "symbol": "GRAM"
     },
     "BTC": {
-        "blockchain": "bitcoin",  # BTC is native to Bitcoin
-        "address": None,  # Native token, no address
+        "blockchain": "bitcoin",
+        "address": None,
         "symbol": "BTC"
     }
 }
