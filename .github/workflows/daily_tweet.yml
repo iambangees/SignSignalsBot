@@ -1,9 +1,9 @@
-name: Daily Tweet
+name: Multi-Token Daily Tweets
 
 on:
   schedule:
-    - cron: '0 12 * * *'  # daily at 12:00 UTC
-  workflow_dispatch:      # manual run option
+    - cron: '0 8,16,0 * * *'  # Every 8 hours: 8:00, 16:00, 00:00 UTC
+  workflow_dispatch:      # Manual run option
 
 jobs:
   tweet:
@@ -23,11 +23,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run SignSignals Bot
-        run: python signsignals_bot.py
+      - name: Run SignSignals Bot (Multi-Chain)
+        run: python signsignals_bot_updated.py
         env:
           CONSUMER_KEY: ${{ secrets.CONSUMER_KEY }}
-          CONSUMER_SECRET: ${{ secrets.CONSUMER_SECRET }}
+          CONSUMER_SECRET: $${{ secrets.CONSUMER_SECRET }}
           ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
           ACCESS_TOKEN_SECRET: ${{ secrets.ACCESS_TOKEN_SECRET }}
-          TOKEN_CONTRACT: ${{ secrets.TOKEN_CONTRACT }}
