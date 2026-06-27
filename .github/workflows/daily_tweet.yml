@@ -1,4 +1,4 @@
-name: Multi-Token Daily Tweets
+name: Daily Tweets
 
 on:
   schedule:
@@ -30,3 +30,4 @@ jobs:
           CONSUMER_SECRET: $${{ secrets.CONSUMER_SECRET }}
           ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
           ACCESS_TOKEN_SECRET: ${{ secrets.ACCESS_TOKEN_SECRET }}
+          TOKEN_CONTRACT: ${{ secrets.TOKEN_CONTRACT }}
