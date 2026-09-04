@@ -3,7 +3,7 @@ name: SignSignals Mention Bot
 on:
   workflow_dispatch:
   schedule:
-    - cron: "*/5 * * * *"
+    - cron: "*/1 * * * *"
 
 jobs:
   mention-bot:
