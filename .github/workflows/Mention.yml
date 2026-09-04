@@ -12,6 +12,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -29,3 +31,13 @@ jobs:
           ACCESS_TOKEN_SECRET: ${{ secrets.ACCESS_TOKEN_SECRET }}
           TOKEN_CONTRACT: ${{ secrets.TOKEN_CONTRACT }}
         run: python mention_bot.py
+
+      - name: Save mention state
+        run: |
+          if [ -f last_mention_id.txt ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add last_mention_id.txt
+            git diff --cached --quiet || git commit -m "Update mention state"
+            git push
+          fi
