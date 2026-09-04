@@ -1,7 +1,7 @@
 import os
 import requests
 import tweepy
-from datetime import datetime
+from datetime import datetime, timezone
 
 # Load GitHub Secrets
 CONSUMER_KEY = os.getenv("CONSUMER_KEY")
@@ -53,7 +53,7 @@ def post_tweet(price, change_24h):
             access_token_secret=ACCESS_TOKEN_SECRET
         )
 
-        timestamp = datetime.utcnow().strftime("%Y-%m-%d %H:%M UTC")
+        timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
         if change_24h:
             change_symbol = "📈" if float(change_24h) > 0 else "📉"
             tweet = (

@@ -166,3 +166,52 @@ Feel free to fork, improve and build upon this project.
 Developed by **@iambangees**
 
 Powered by GitHub Actions, Python and DexScreener.
+
+
+---
+
+# 🤖 Mention Replies
+
+SignSignalsBot can also respond to users who mention the bot and ask for the
+$SIGN price.
+
+### Examples
+
+```text
+@SignSignals price
+@SignSignals $SIGN
+@SignSignals sign price
+@SignSignals what's the price?
+```
+
+The bot replies directly to the mention with the current $SIGN USD price and
+24-hour change.
+
+The mention worker runs every 5 minutes through GitHub Actions. It stores the
+latest processed X post ID in `last_mention_id.txt` so the same mention is not
+answered repeatedly.
+
+### Important X API permissions
+
+The X app connected to these credentials must have **Read and Write** access
+for the bot to read mentions and publish replies.
+
+### First deployment
+
+After pushing the new files, run **SignSignals Mention Bot** manually once
+from the Actions tab. If the account already has old mentions, the bot may
+process recent ones. For a clean deployment, create `last_mention_id.txt`
+containing the ID of the latest existing mention before enabling the schedule.
+
+### GitHub Actions permissions
+
+The mention workflow uses:
+
+```yaml
+permissions:
+  contents: write
+```
+
+This allows GitHub Actions to commit the mention-state file back to the
+repository. No X credentials are stored in the repository; they remain GitHub
+Secrets.
