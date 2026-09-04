@@ -1,43 +1,31 @@
 name: SignSignals Mention Bot
 
 on:
-  workflow_dispatch:
-  schedule:
-    - cron: "*/1 * * * *"
+workflow_dispatch:
+schedule:
+- cron: "*/1 * * * *"
 
 jobs:
-  mention-bot:
-    runs-on: ubuntu-latest
+mention-bot:
+runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+steps:  
+  - name: Checkout repository  
+    uses: actions/checkout@v4  
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
+  - name: Set up Python  
+    uses: actions/setup-python@v5  
+    with:  
+      python-version: "3.11"  
 
-      - name: Install dependencies
-        run: pip install -r requirements.txt
+  - name: Install dependencies  
+    run: pip install -r requirements.txt  
 
-      - name: Run mention bot
-        env:
-          CONSUMER_KEY: ${{ secrets.CONSUMER_KEY }}
-          CONSUMER_SECRET: ${{ secrets.CONSUMER_SECRET }}
-          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-          ACCESS_TOKEN_SECRET: ${{ secrets.ACCESS_TOKEN_SECRET }}
-          TOKEN_CONTRACT: ${{ secrets.TOKEN_CONTRACT }}
-        run: python mention_bot.py
-
-      - name: Save mention state
-        run: |
-          if [ -f last_mention_id.txt ]; then
-            git config user.name "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add last_mention_id.txt
-            git diff --cached --quiet || git commit -m "Update mention state"
-            git push
-          fi
+  - name: Run mention bot  
+    env:  
+      CONSUMER_KEY: ${{ secrets.CONSUMER_KEY }}  
+      CONSUMER_SECRET: ${{ secrets.CONSUMER_SECRET }}  
+      ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}  
+      ACCESS_TOKEN_SECRET: ${{ secrets.ACCESS_TOKEN_SECRET }}  
+      TOKEN_CONTRACT: ${{ secrets.TOKEN_CONTRACT }}  
+    run: python mention_bot.py
